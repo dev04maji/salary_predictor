@@ -1,11 +1,10 @@
-# app.py
 from flask import Flask, request, render_template
 import joblib
 import pandas as pd
 
 app = Flask(__name__)
 
-# Load trained pipeline (created by train.py)
+
 model = joblib.load("model.joblib")
 
 @app.route("/", methods=["GET"])
@@ -14,14 +13,14 @@ def index():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    # Read form fields
+   
     job_title = request.form.get("job_title", "")
     years_experience = float(request.form.get("years_experience", 0))
     location = request.form.get("location", "")
     education_level = request.form.get("education_level", "")
     remote_ratio = float(request.form.get("remote_ratio", 0))
 
-    # Build a single-row DataFrame matching training features
+    
     X = pd.DataFrame([{
         "job_title": job_title,
         "years_experience": years_experience,
@@ -31,7 +30,7 @@ def predict():
     }])
 
     pred = model.predict(X)[0]
-    # Round result for display
+   
     predicted_salary = round(float(pred), 2)
 
     return render_template("index.html", predicted_salary=predicted_salary,
